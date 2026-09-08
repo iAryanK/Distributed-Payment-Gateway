@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: config-service
+
+  cloud:
+    config.server.git:
+      uri: https://github.com/iAryanK/Distributed-Payment-Gateway-Config
+      username: iaryank
+      password: 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
+      default-label: main
+
+server.port: 8888
+
+
+
+
+
+
+
