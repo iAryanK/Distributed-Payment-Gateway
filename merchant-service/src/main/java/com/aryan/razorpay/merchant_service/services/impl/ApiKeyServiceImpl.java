@@ -2,7 +2,7 @@ package com.aryan.razorpay.merchant_service.services.impl;
 
 import com.aryan.razorpay.common_lib.exceptions.ResourceNotFoundException;
 import com.aryan.razorpay.common_lib.util.RandomizedUtil;
-import com.aryan.razorpay.merchant_service.cache.ApiKeyCache;
+import com.aryan.razorpay.common_lib.cache.ApiKeyCache;
 import com.aryan.razorpay.merchant_service.dto.request.CreateApiKeyRequest;
 import com.aryan.razorpay.merchant_service.dto.response.ApiKeyCreateResponse;
 import com.aryan.razorpay.merchant_service.dto.response.ApiKeyResponse;

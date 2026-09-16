@@ -3,3 +3,4 @@ com.aryan.razorpay.common_lib.config.SharedKafkaAutoConfiguration
 com.aryan.razorpay.common_lib.idempotency.SharedResilienceAutoConfiguration
 com.aryan.razorpay.common_lib.util.SharedSecurityAutoConfiguration
 com.aryan.razorpay.common_lib.exceptions.SharedExceptionAutoConfiguration
+com.aryan.razorpay.common_lib.web.SharedWebFilterAutoConfiguration

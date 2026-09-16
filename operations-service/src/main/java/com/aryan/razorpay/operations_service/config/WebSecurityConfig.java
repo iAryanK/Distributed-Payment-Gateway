@@ -1,4 +1,4 @@
-package com.aryan.razorpay.merchant_service.security;
+package com.aryan.razorpay.operations_service.config;
 
 import com.aryan.razorpay.common_lib.idempotency.IdempotencyFilter;
 import jakarta.servlet.Filter;
@@ -7,8 +7,6 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @RequiredArgsConstructor
@@ -24,8 +22,4 @@ public class WebSecurityConfig {
         return registration;
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }

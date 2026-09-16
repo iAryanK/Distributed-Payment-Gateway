@@ -1,4 +1,4 @@
-package com.aryan.razorpay.merchant_service.cache;
+package com.aryan.razorpay.common_lib.cache;
 
 import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
