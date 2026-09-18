@@ -10,7 +10,6 @@ import java.time.Duration;
 import java.util.Optional;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class RedisApiKeyCache implements ApiKeyCache {
 

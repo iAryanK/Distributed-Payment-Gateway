@@ -45,19 +45,19 @@ public class SharedResilienceAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "app.rate-limit.method", havingValue = "fixed")
+    @ConditionalOnProperty(name = "app.rate-limit.method", havingValue = "sliding-window")
     public RateLimiter slidingWindowRateLimiter(StringRedisTemplate stringRedisTemplate) {
         return new SlidingWindowRateLimiter(stringRedisTemplate);
     }
 
     @Bean
-    @ConditionalOnProperty(name = "app.rate-limit.method", havingValue = "fixed")
+    @ConditionalOnProperty(name = "app.rate-limit.method", havingValue = "sliding-window-lua")
     public RateLimiter slidingWindowLuaLimiter(StringRedisTemplate stringRedisTemplate) {
         return new SlidingWindowLuaLimiter(stringRedisTemplate);
     }
 
     @Bean
-    @ConditionalOnProperty(name = "app.rate-limit.method", havingValue = "fixed")
+    @ConditionalOnProperty(name = "app.rate-limit.method", havingValue = "token-bucket")
     public RateLimiter tokenBucketRateLimiter(StringRedisTemplate stringRedisTemplate) {
         return new TokenBucketRateLimiter(stringRedisTemplate);
     }
