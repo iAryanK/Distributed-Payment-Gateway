@@ -1,5 +1,6 @@
 package com.aryan.razorpay.payment_service.repositories;
 
+import aj.org.objectweb.asm.commons.Remapper;
 import com.aryan.razorpay.common_lib.enums.PaymentStatus;
 import com.aryan.razorpay.payment_service.entities.Payment;
 import jakarta.persistence.LockModeType;
@@ -40,4 +41,6 @@ public interface PaymentRepository extends JpaRepository<Payment, UUID> {
             AND p.settledAt IS NULL
             """)
     List<Payment> findByMerchantIdAndStatusForUpdate(UUID merchantId, PaymentStatus paymentStatus);
+
+    Optional<Payment> findByMerchantIdAndIdempotencyKey(UUID merchantId, String idempotencyKey);
 }

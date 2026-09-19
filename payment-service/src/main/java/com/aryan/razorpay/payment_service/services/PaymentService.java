@@ -7,7 +7,7 @@ import jakarta.validation.Valid;
 import java.util.UUID;
 
 public interface PaymentService {
-    PaymentResponse initiate(UUID merchantId, @Valid PaymentInitRequest request);
+    PaymentResponse initiate(UUID merchantId, @Valid PaymentInitRequest request, String idempotencyKey);
 
     PaymentResponse capture(UUID merchantId, UUID paymentId);
 

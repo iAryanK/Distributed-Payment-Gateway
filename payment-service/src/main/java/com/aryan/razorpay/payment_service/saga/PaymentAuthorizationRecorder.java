@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -36,7 +37,7 @@ public class PaymentAuthorizationRecorder {
     private final PaymentMapper paymentMapper;
 
     @Transactional
-    public Payment recordPayment(UUID merchantId, PaymentInitRequest request) {
+    public Payment recordPayment(UUID merchantId, PaymentInitRequest request, String idempotencyKey) {
         OrderRecord order = orderRepository.findByIdAndMerchantIdForUpdate(request.orderId(), merchantId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order", request.orderId()));
 
@@ -53,7 +54,7 @@ public class PaymentAuthorizationRecorder {
                 .amount(order.getAmount())
                 .status(PaymentStatus.CREATED)
                 .method(request.method())
-                .idempotencyKey(UUID.randomUUID().toString())
+                .idempotencyKey(idempotencyKey != null ? idempotencyKey : UUID.randomUUID().toString())
                 .methodDetails(request.methodDetails())
                 .build();
         payment = paymentRepository.save(payment);
@@ -94,6 +95,12 @@ public class PaymentAuthorizationRecorder {
         payment = paymentRepository.save(payment);
         publishStatusEvent(payment, "PAYMENT_CREATED");
         return paymentMapper.toResponse(payment);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<PaymentResponse> findExistingAttempt(UUID merchantId, String idempotencyKey) {
+        return paymentRepository.findByMerchantIdAndIdempotencyKey(merchantId, idempotencyKey)
+                .map(paymentMapper::toResponse);
     }
 
     private void publishStatusEvent(Payment payment, String eventType) {
