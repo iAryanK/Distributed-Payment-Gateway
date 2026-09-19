@@ -18,6 +18,8 @@ import com.aryan.razorpay.payment_service.outbox.OutboxEventPublisher;
 import com.aryan.razorpay.payment_service.repositories.OrderRepository;
 import com.aryan.razorpay.payment_service.repositories.PaymentRepository;
 import com.aryan.razorpay.payment_service.services.OrderService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +48,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
+    @CircuitBreaker(name = "merchant-service")
+    @Retry(name = "merchant-service")
     public OrderResponse create(UUID merchantId, CreateOrderRequest request) {
         if (request.receipt() != null && orderRepository.existsByMerchantIdAndReceipt(merchantId, request.receipt())) {
             throw new DuplicateResourceException("ORDER_RECEIPT_DUPLICATE", "order with receipt already exists"+request.receipt());

@@ -35,15 +35,14 @@ public class SettlementTransactionExecutor {
     private final SettlementPaymentRepository settlementPaymentRepository;
     private final BankTransferProcessor bankTransferProcessor;
     private final OutboxEventPublisher outboxEventPublisher;
-    private final MerchantServiceClient merchantServiceClient;
-    private final PaymentServiceClient paymentServiceClient;
+    private final SettlementIntegrationGateway settlementIntegrationGateway;
 
     private static final double FEE_RATE = 0.02;
     private static final double GST_RATE = 0.18;
 
     @Transactional
     public void processForMerchant(UUID merchantId, LocalDate settlementDate) {
-        List<PaymentSettlementView> unsettledPayments = paymentServiceClient.findUnsettledCapturedPayments(merchantId);
+        List<PaymentSettlementView> unsettledPayments = settlementIntegrationGateway.findUnsettledCapturedPayments(merchantId);
         if (unsettledPayments.isEmpty()) return;
 
         log.info("Processing {} unsettled payments for merchantID {} on {}",
@@ -82,7 +81,7 @@ public class SettlementTransactionExecutor {
             }
             settlementPaymentRepository.saveAll(links);
 
-            SettlementBankDetails settlementBankDetails = merchantServiceClient.getSettlementBankDetails(merchantId);
+            SettlementBankDetails settlementBankDetails = settlementIntegrationGateway.getSettlementBankDetails(merchantId);
 
             // call the bank transfer service to transfer net amount to merchant settlement bank details
             BankTransferResult bankTransferResult = bankTransferProcessor.initiate(settlement.getId(), merchantId, netAmount,
@@ -118,7 +117,7 @@ public class SettlementTransactionExecutor {
             List<UUID> paymentIds = settlementPayments.stream().map(SettlementPayment::getId)
                             .map(SettlementPaymentId::getPaymentId)
                             .toList();
-            paymentServiceClient.markSettled(paymentIds);
+            settlementIntegrationGateway.markSettled(paymentIds);
 
             log.info("Settlement processed successfully, settlementId: {}", settlement.getId());
             outboxEventPublisher.publish(EventAggregateType.SETTLEMENT, settlementId,
